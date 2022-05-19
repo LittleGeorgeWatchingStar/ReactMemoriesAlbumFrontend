@@ -9,8 +9,8 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 //import GoogleLogin from 'react-google-login';
-import { GoogleLogin } from '@react-oauth/google';
-
+//import { GoogleLogin } from '@react-oauth/google';
+import { signInWithGoogle } from "./Firebase";
 import useStyles from "./styles";
 import Input from "./Input";
 import Icon from "./icon";
@@ -63,24 +63,24 @@ const Auth = () => {
   // );
 
   const handleFailure = (result) => {
-      console.log(result);
+    console.log(result);
     alert(result);
   };
 
   const handleLogin = async (googleData) => {
-    const res = await fetch('/api/google-login', {
-      method: 'POST',
+    const res = await fetch("/api/google-login", {
+      method: "POST",
       body: JSON.stringify({
         token: googleData.tokenId,
       }),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     const data = await res.json();
     setLoginData(data);
-    localStorage.setItem('loginData', JSON.stringify(data));
+    localStorage.setItem("loginData", JSON.stringify(data));
   };
 
   return (
@@ -167,8 +167,8 @@ const Auth = () => {
               onFailure={handleFailure}
               cookiePolicy={'single_host_origin'}
             ></GoogleLogin> */}
-            
-              {/* <Button
+
+          {/* <Button
                 className={classes.buttonSubmit}
                 color="primary"
                 fullWidth
@@ -178,12 +178,11 @@ const Auth = () => {
               >
                 Google Sign In
               </Button> */}
-            <GoogleLogin
-            onSuccess={googleSuccess}
-            onError={googleFailure}
-            >
-              Button Google
-            </GoogleLogin>
+          <button className="login-with-google-btn" onClick={signInWithGoogle}>
+            Sign in with Google
+          </button>
+          <h3>{localStorage.getItem("name")}</h3>
+          <h3>{localStorage.getItem("email")}</h3>
           <Grid container justify="flex-end">
             <Grid item>
               <Button onClick={switchMode}>
