@@ -10,20 +10,57 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 //import GoogleLogin from 'react-google-login';
 //import { GoogleLogin } from '@react-oauth/google';
-import { signInWithGoogle } from "./Firebase";
+//import { signInWithGoogle } from "./Firebase";
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import useStyles from "./styles";
 import Input from "./Input";
-import Icon from "./icon";
+//import Icon from "./icon";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { signin, signup } from '../../actions/auth';
+
+const initialState = { fistName: '', lastName: '', email: '', password: '', confirmPassword: ''};
 
 const Auth = () => {
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBq6G-u7Oq4tfbkl3fwp6zSSPsmKtARQeA",
+    authDomain: "newmemories.firebaseapp.com",
+    projectId: "newmemories",
+    storageBucket: "newmemories.appspot.com",
+    messagingSenderId: "1050403164416",
+    appId: "1:1050403164416:web:bee8ef793b075ae97ae3e5",
+    measurementId: "G-PBD1L0JDF4",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const classes = useStyles();
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
 
-  const handleChange = () => {};
+    console.log(formData);
+
+    if (isSignup) {
+      dispatch(signup(formData, navigate));
+    } else {
+      dispatch(signin(formData, navigate));
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name] : e.target.value});
+  };
 
   const handleShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -33,54 +70,18 @@ const Auth = () => {
     handleShowPassword(false);
   };
 
-  const googleSuccess = (credentialResponse) => {
-    // const res = await fetch('/api/google-login', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     token: googleData.tokenId,
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
+  const handleLogin = async () => {
+    let user = await signInWithPopup(auth, provider);
 
-    console.log(credentialResponse);
+    console.log(user);
 
-    // const data = credentialResponse;
-    // setLoginData(data);
-    // localStorage.setItem('loginData', JSON.stringify(data));
-  };
-
-  const googleFailure = (error) => {
-    console.log(error);
-    console.log("Google sign in was unsuccessful");
-  };
-
-  // const [loginData, setLoginData] = useState(
-  //   localStorage.getItem('loginData')
-  //     ? JSON.parse(localStorage.getItem('loginData'))
-  //     : null
-  // );
-
-  const handleFailure = (result) => {
-    console.log(result);
-    alert(result);
-  };
-
-  const handleLogin = async (googleData) => {
-    const res = await fetch("/api/google-login", {
-      method: "POST",
-      body: JSON.stringify({
-        token: googleData.tokenId,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await res.json();
-    setLoginData(data);
-    localStorage.setItem("loginData", JSON.stringify(data));
+    try {
+      dispatch({type: 'AUTH', data:{user } });
+      navigate('/');
+    } catch(error) {
+       console.log(error);
+    };
+    
   };
 
   return (
@@ -141,48 +142,17 @@ const Auth = () => {
           >
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
-          {/* <GoogleLogin
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            render={(renderProps) => (
-              <Button
-                className={classes.buttonSubmit}
-                color="primary"
-                fullWidth
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-                startIcon={<Icon />}
-                variant="contained"
-              >
-                Google Sign In
-              </Button>
-            )}
-            onSuccess={googleSuccess}
-            onFailure={googleFailure}
-            cookiePolicy="single_host_origin"
-          /> */}
-          {/* <GoogleLogin
-              clientId="1050403164416-ki8svm29la83si7f00nccjb9jdtv4f1q.apps.googleusercontent.com"
-              buttonText="Log in with Google"
-              onSuccess={handleLogin}
-              onFailure={handleFailure}
-              cookiePolicy={'single_host_origin'}
-            ></GoogleLogin> */}
-
-          {/* <Button
-                className={classes.buttonSubmit}
-                color="primary"
-                fullWidth
-                onClick={() => googleSuccess()}
-                startIcon={<Icon />}
-                variant="contained"
-              >
-                Google Sign In
-              </Button> */}
-          <button className="login-with-google-btn" onClick={signInWithGoogle}>
+          
+          <Button
+            className={classes.buttonSubmit}
+            fullWidth
+            variant="contained"
+            onClick={handleLogin}
+          >
             Sign in with Google
-          </button>
-          <h3>{localStorage.getItem("name")}</h3>
-          <h3>{localStorage.getItem("email")}</h3>
+          </Button>
+          {/* <h3>{localStorage.getItem("name")}</h3>
+          <h3>{localStorage.getItem("email")}</h3> */}
           <Grid container justify="flex-end">
             <Grid item>
               <Button onClick={switchMode}>
