@@ -20,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signin, signup } from '../../actions/auth';
 
-const initialState = { fistName: '', lastName: '', email: '', password: '', confirmPassword: ''};
+const initialState = { "firstName": "", "lastName": "", "email": "", "password": "", "confirmPassword": ""};
 
 const Auth = () => {
   // Your web app's Firebase configuration
@@ -47,8 +47,8 @@ const Auth = () => {
 
   const classes = useStyles();
 
-  const handleSubmit = () => {
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log(formData);
 
     if (isSignup) {
@@ -129,6 +129,7 @@ const Auth = () => {
               <Input
                 name="confirmPassword"
                 label="Repeat Password"
+                handleChange={handleChange}
                 type={showPassword ? "text" : "password"}
               />
             )}

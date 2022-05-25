@@ -1,18 +1,29 @@
 import { AUTH, LOGOUT } from '../constants/actionTypes';
 
-const authReducer = (state = { authData: null}, action) => {
+const auth = (state = { authData: null}, action) => {
   switch (action.type) {
     case AUTH:
-      console.log(action);
-      console.log(action?.data);
-      console.log(action?.data.user.user);
+       console.log(action);
+    // //   console.log(action?.data);
+    // //   console.log(action?.data.user.user);
+    //   console.log(action?.data);
+
+      let authData = action;
+
+    //   if (action?.data.user.user) {
+    //     authData = action?.data.user.user;
+    //   } else {
+    //     authData = action?.data.result;
+    //   }
+
+      console.log(authData);
     //   console.log(action?.data.user.user.displayName);
     //   console.log(action?.data.user.user.email);
     //   console.log(action?.data.user.user.photoURL);
     //   console.log(action?.data.user.user.accessToken);
 
-      localStorage.setItem("profile", JSON.stringify({ ...action?.data.user.user }));
-      return {...state, authData: action?.data.user.user };
+      localStorage.setItem("profile", JSON.stringify({ ...authData }));
+      return {...state, authData: authData };
     case LOGOUT:
         localStorage.clear(); 
         return {...state, authData: null }; 
@@ -21,4 +32,4 @@ const authReducer = (state = { authData: null}, action) => {
   }
 };
 
-export default authReducer;
+export default auth;

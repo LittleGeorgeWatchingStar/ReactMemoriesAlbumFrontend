@@ -13,7 +13,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  //console.log(user);
+  console.log(user);
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -46,12 +46,12 @@ const NavBar = () => {
         {user ? (
           <div className={classes.profile}>
 
-            {user.photoURL && (
+            {user.photoURL ? (
               <Avatar alt={user.displayName} src={user.photoURL}></Avatar>
-            )}
+            ) : (<Avatar alt={user.data.result.name}>{user.data.result.name}</Avatar>)}
 
             <Typography className={classes.userName} variant="h6">
-              {user.displayName}
+              {user.displayName ? user.displayName : user.data.result.name}
             </Typography>
             <Button
               variant="contained"
