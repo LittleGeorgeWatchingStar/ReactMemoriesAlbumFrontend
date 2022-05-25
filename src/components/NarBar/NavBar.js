@@ -13,7 +13,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(user);
+  //console.log(user);
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -45,7 +45,7 @@ const NavBar = () => {
       <Toolbar className={classes.toolbar}>
         {user ? (
           <div className={classes.profile}>
-              
+
             {user.photoURL && (
               <Avatar alt={user.displayName} src={user.photoURL}></Avatar>
             )}
