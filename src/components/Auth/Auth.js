@@ -76,7 +76,7 @@ const Auth = () => {
     console.log(user);
 
     try {
-      dispatch({type: 'AUTH', data:{user } });
+      dispatch({type: 'AUTHBYGOOGLE', data:{user} });
       navigate('/');
     } catch(error) {
        console.log(error);
